@@ -4,12 +4,14 @@ project(unit_converter)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include)
+include_directories(include
+JSON/single_include)
 
 add_executable(unit_converter
     src/main.cpp
     src/CsvHandler.cpp
     src/Length.cpp
     src/Weight.cpp
+    src/JSONHandler.cpp
 )
 
