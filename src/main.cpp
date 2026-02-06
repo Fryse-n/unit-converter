@@ -1,5 +1,6 @@
 #include "Converter.h"
 #include "Length.h"
+#include "Weight.h"
 
 #include "FileHandler.h"
 #include "CsvHandler.h"
@@ -7,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-FileHandler* getFileHanler(std::string filename) {
+FileHandler* getFileHandler(std::string filename) {
     if (filename.find(".csv") != std::string::npos) {
         return new CsvHandler();
 
@@ -22,7 +23,7 @@ int main(){
     std::cout << "Enter file location: ";
     std::cin >> filename;
 
-    FileHandler* fileHandler = getFileHanler(filename);
+    FileHandler* fileHandler = getFileHandler(filename);
     if (fileHandler == nullptr) return -1;
     
     if (!fileHandler->load(filename)) {
@@ -37,6 +38,10 @@ int main(){
 
     std::string unitOrigin;
     std::string unitTarget;
+    
+    std::string type;
+    std::cout << "Enter conversion type (length / weight): ";
+    std::cin >> type;
 
     std::cout << "Enter original unit: ";
     std::cin >> unitOrigin;
@@ -44,9 +49,19 @@ int main(){
     std::cout << "Enter target unit: ";
     std::cin >> unitTarget;
 
+    Converter* converter = nullptr;
 
-    Converter* converter = new Length();
-    std::vector<std::string> originalCol = fileHandler->getColumn(selector);
+    if (type == "length") {
+            converter = new Length();
+        } else if (type == "weight") {
+            converter = new Weight();
+        } else {
+            std::cerr << "Unsupported conversion type\n";
+            delete fileHandler;
+            return -1;
+        }
+
+    auto originalCol = fileHandler->getColumn(selector);
     std::vector<std::string> resultCol;
 
     for (const auto& raw : originalCol)
